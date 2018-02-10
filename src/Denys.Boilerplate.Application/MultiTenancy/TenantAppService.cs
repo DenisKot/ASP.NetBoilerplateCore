@@ -20,7 +20,7 @@ namespace Denys.Boilerplate.MultiTenancy
     [AbpAuthorize(PermissionNames.Pages_Tenants)]
     public class TenantAppService : AsyncCrudAppService<Tenant, TenantDto, int, PagedResultRequestDto, CreateTenantDto, TenantDto>, ITenantAppService
     {
-        private readonly TenantManager _tenantManager;
+        private readonly TenantManager tenantManager;
         private readonly EditionManager _editionManager;
         private readonly UserManager _userManager;
         private readonly RoleManager _roleManager;
@@ -37,7 +37,7 @@ namespace Denys.Boilerplate.MultiTenancy
             IPasswordHasher<User> passwordHasher) 
             : base(repository)
         {
-            _tenantManager = tenantManager; 
+            this.tenantManager = tenantManager; 
             _editionManager = editionManager;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -61,7 +61,8 @@ namespace Denys.Boilerplate.MultiTenancy
                 tenant.EditionId = defaultEdition.Id;
             }
 
-            await _tenantManager.CreateAsync(tenant);
+            // Hello from Denys
+            await this.tenantManager.CreateAsync(tenant);
             await CurrentUnitOfWork.SaveChangesAsync(); // To get new tenant's id.
 
             // Create tenant database
@@ -105,8 +106,8 @@ namespace Denys.Boilerplate.MultiTenancy
         {
             CheckDeletePermission();
 
-            var tenant = await _tenantManager.GetByIdAsync(input.Id);
-            await _tenantManager.DeleteAsync(tenant);
+            var tenant = await this.tenantManager.GetByIdAsync(input.Id);
+            await this.tenantManager.DeleteAsync(tenant);
         }
 
         private void CheckErrors(IdentityResult identityResult)
